@@ -17,7 +17,8 @@ import os
 
 # data
 #TRAINING_DATA_FILE = "data/ETF_SPY_2009_2020.csv"
-TRAINING_DATA_FILE = "data/dow_30_2009_2020.csv"
+#TRAINING_DATA_FILE = "data/dow_30_2009_2020.csv"
+TRAINING_DATA_FILE = "data/9ETFs_20040827_20211101.csv"
 
 now = datetime.datetime.now()
 TRAINED_MODEL_DIR = f"trained_models/{now}"
