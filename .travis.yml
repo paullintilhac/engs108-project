@@ -7,6 +7,7 @@ install:
     - virtualenv -p python3 venv
     - deactivate
     - source venv/bin/activate
+    - apt install libopenmpi-dev
     - pip install numpy==1.16.4
     - pip install pandas==1.0.3
     - pip install stockstats
