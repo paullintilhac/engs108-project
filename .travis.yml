@@ -3,8 +3,12 @@ python:
     - 3.6
 
 install:
+    - pip install virtualenv
+    - virtualenv -p python3 venv
     - deactivate
     - source venv/bin/activate
+    - pip install -r requirements.txt
+
 script:
     - python3 run_DRL.py -T 20160601 --small
   
