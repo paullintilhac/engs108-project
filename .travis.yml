@@ -1,0 +1,21 @@
+language: python
+python:
+    - 3.6
+
+install:
+    - deactivate
+    - source /venv/bin/activate
+script:
+    - python3 run_DRL.py -T 20160601 --small
+  
+
+# after_success:
+#     -
+
+# This reportedly works around an issue downloading packages from pypi on
+# travis.  Consider removing this after the underlying issue is fixed.
+# https://github.com/travis-ci/travis-ci/issues/2389
+sudo: false
+
+matrix:
+    fast_finish: true
