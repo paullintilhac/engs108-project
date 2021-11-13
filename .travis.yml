@@ -4,7 +4,7 @@ python:
 
 install:
     - deactivate
-    - source /venv/bin/activate
+    - source venv/bin/activate
 script:
     - python3 run_DRL.py -T 20160601 --small
   
