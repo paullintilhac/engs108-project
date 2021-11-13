@@ -87,19 +87,19 @@ def add_technical_indicator(df):
         temp_dx = pd.DataFrame(temp_dx)
         dx = dx.append(temp_dx, ignore_index=True)
         ## bollinger band
-        temp_bb = stock[stock.tic == unique_ticker[i]]['Bolling']
+        temp_bb = stock[stock.tic == unique_ticker[i]]['boll']
         temp_bb = pd.DataFrame(temp_bb)
         bb = bb.append(temp_bb, ignore_index=True)
         ## Simple Moving Average
-        temp_sma = stock[stock.tic == unique_ticker[i]]['SMA']
+        temp_sma = stock[stock.tic == unique_ticker[i]]['open_2_sma']
         temp_sma = pd.DataFrame(temp_sma)
         sma = sma.append(temp_sma, ignore_index=True)
         ## Exponential Moving Average
-        temp_ema = stock[stock.tic == unique_ticker[i]]['EMA']
+        temp_ema = stock[stock.tic == unique_ticker[i]]['open_2_ema']
         temp_ema = pd.DataFrame(temp_ema)
         ema = ema.append(temp_ema, ignore_index=True)
         ## moving standard deviation
-        temp_mstd = stock[stock.tic == unique_ticker[i]]['MSTD']
+        temp_mstd = stock[stock.tic == unique_ticker[i]]['open_2_mstd']
         temp_mstd = pd.DataFrame(temp_mstd)
         mstd = mstd.append(temp_mstd, ignore_index=True)
 
@@ -113,10 +113,14 @@ def add_technical_indicator(df):
 
 
 
-def preprocess_data():
+def preprocess_data(small):
     """data preprocessing pipeline"""
-
-    df = load_dataset(file_name=config.TRAINING_DATA_FILE)
+    print("loading dataset " + str(config.TRAINING_DATA_FILE))
+    if (small):
+        print("using smaller dataset")
+        df = load_dataset(file_name=config.SMALL_TRAINING_DATA_FILE)
+    else:
+        df = load_dataset(file_name=config.TRAINING_DATA_FILE)
     # get data after 2009
     df = df[df.datadate>=20090000]
     # calcualte adjusted price
