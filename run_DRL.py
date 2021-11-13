@@ -12,9 +12,27 @@ from config.config import *
 from model.models import *
 import os
 
-def run_model() -> None:
+def model_dict_create():
+    """Parse arguments and save them in model_dict"""
+
+    parser.add_argument('--small', action='store_true',
+                        help='use a smaller dataset')
+    args = parser.parse_args()
+
+    model_dict = {}
+
+    if args.small:
+        model_dict.update({'small': 1})
+    else:
+        model_dict.update({'small': None})
+
+    return model_dict
+
+def run_model(argv) -> None:
     """Train the model."""
 
+    model_dict = model_dict_create()
+    print("model_dict: " + str(model_dict))
     # read and preprocess data
     preprocessed_path = "done_data.csv"
     if os.path.exists(preprocessed_path):
@@ -47,4 +65,4 @@ def run_model() -> None:
     #_logger.info(f"saving model version: {_version}")
 
 if __name__ == "__main__":
-    run_model()
+    run_model(sys.argv[1:])

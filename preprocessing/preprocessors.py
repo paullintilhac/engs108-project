@@ -52,7 +52,8 @@ def add_technical_indicator(df):
     :return: (df) pandas dataframe
     """
     stock = Sdf.retype(df.copy())
-
+    print("printing stock object:")
+    print("stock: " + str(stock))
     stock['close'] = stock['adjcp']
     unique_ticker = stock.tic.unique()
 
@@ -60,6 +61,12 @@ def add_technical_indicator(df):
     rsi = pd.DataFrame()
     cci = pd.DataFrame()
     dx = pd.DataFrame()
+    mom = pd.DataFrame()
+    bb = pd.DataFrame()
+    sma = pd.DataFrame()
+    ema = pd.DataFrame()
+    mstd = pd.DataFrame()
+
 
     #temp = stock[stock.tic == unique_ticker[0]]['macd']
     for i in range(len(unique_ticker)):
@@ -79,6 +86,22 @@ def add_technical_indicator(df):
         temp_dx = stock[stock.tic == unique_ticker[i]]['dx_30']
         temp_dx = pd.DataFrame(temp_dx)
         dx = dx.append(temp_dx, ignore_index=True)
+        ## bollinger band
+        temp_bb = stock[stock.tic == unique_ticker[i]]['Bolling']
+        temp_bb = pd.DataFrame(temp_bb)
+        bb = bb.append(temp_bb, ignore_index=True)
+        ## Simple Moving Average
+        temp_sma = stock[stock.tic == unique_ticker[i]]['SMA']
+        temp_sma = pd.DataFrame(temp_sma)
+        sma = sma.append(temp_sma, ignore_index=True)
+        ## Exponential Moving Average
+        temp_ema = stock[stock.tic == unique_ticker[i]]['EMA']
+        temp_ema = pd.DataFrame(temp_ema)
+        ema = ema.append(temp_ema, ignore_index=True)
+        ## moving standard deviation
+        temp_mstd = stock[stock.tic == unique_ticker[i]]['MSTD']
+        temp_mstd = pd.DataFrame(temp_mstd)
+        mstd = mstd.append(temp_mstd, ignore_index=True)
 
 
     df['macd'] = macd
@@ -114,7 +137,6 @@ def add_turbulence(df):
     df = df.merge(turbulence_index, on='datadate')
     df = df.sort_values(['datadate','tic']).reset_index(drop=True)
     return df
-
 
 
 def calcualte_turbulence(df):
