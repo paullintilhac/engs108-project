@@ -8,6 +8,8 @@ install:
     - deactivate
     - source venv/bin/activate
     - pip install pandas
+    - pip install stable_baselines
+    - pip install tensorflow
 
 script:
     - python3 run_DRL.py -T 20160601 --small
