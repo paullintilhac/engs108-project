@@ -93,6 +93,8 @@ def add_technical_indicator(df):
 def preprocess_data():
     """data preprocessing pipeline"""
 
+    print('PREPROCESSING DATA PREPROCESSING DATA')
+
     df = load_dataset(file_name=config.TRAINING_DATA_FILE)
     # get data after 2009
     df = df[df.datadate>=20090000]
@@ -150,7 +152,62 @@ def calcualte_turbulence(df):
                                      'turbulence':turbulence_index})
     return turbulence_index
 
+def add_systemic_risk(df):
+    """
+    add systemic risk index from a precalcualted dataframe
+    :param data: (df) pandas dataframe
+    :return: (df) pandas dataframe
+    """
+    systemic_risk_index = calcualte_systemic_risk(df)
+    df = df.merge(systemic_risk_index, on='datadate')
+    df = df.sort_values(['datadate','tic']).reset_index(drop=True)
+    return df
 
+
+
+def calcualte_systemic_risk(df):
+    """calculate systemic risk index based on dow 30"""
+    # can add other market assets
+    
+    df_price_pivot=df.pivot(index='datadate', columns='tic', values='adjcp')
+    unique_date = df.datadate.unique()
+    
+    ###
+    print(df_price_pivot)
+    
+    # start after a year
+    ### SHORTER TIME WINDOW MAY BE MORE RESPONSIVE
+    ### HYPERPARAMETER #1
+    start = 252
+    systemic_risk_index = [0]*start
+    #systemic_risk_index = [0]
+    for i in range(start,len(unique_date)):
+        current_price = df_price_pivot[df_price_pivot.index == unique_date[i]]
+        hist_price = df_price_pivot[[n in unique_date[(i-start):i] for n in df_price_pivot.index ]]
+        ### Use the past 252 days of price history to calculate systemic risk
+        
+        cov_temp = hist_price.cov() ### THIS IS THE COVARIANCE MATRIX
+        
+        ### Resources:
+        # https://stats.stackexchange.com/questions/346692/how-does-eigenvalues-measure-variance-along-the-principal-components-in-pca
+        # https://stackoverflow.com/questions/54538232/finding-eigenvalues-of-covariance-matrix?rq=1
+        # https://numpy.org/doc/stable/reference/generated/numpy.linalg.eig.htmlhttps://numpy.org/doc/stable/reference/generated/numpy.linalg.eig.html
+        
+        eigenvals_temp, eigenvects_trash = np.linalg.eig(cov_temp)
+        # The eigenvalues are automatically ordered from largest to smallest
+        
+        ### HYPERPARAMETER #2
+        # Number of eigenvalues to use in the absorption ratio is heuristically 1/5 of the number of assets (Kritzman et al 2010)
+        n_eigs = 6 # For DJIA30
+        
+        systemic_risk_temp = sum(eigenvals_temp[0:(n_eigs-1)])/sum(eigenvals_temp)    
+        
+        systemic_risk_index.append(systemic_risk_temp)
+    
+    
+    systemic_risk_index = pd.DataFrame({'datadate':df_price_pivot.index,
+                                     'systemic_risk':systemic_risk_index})
+    return systemic_risk_index
 
 
 

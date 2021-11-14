@@ -22,6 +22,7 @@ def run_model() -> None:
     else:
         data = preprocess_data()
         data = add_turbulence(data)
+        data = add_systemic_risk(data) ###
         data.to_csv(preprocessed_path)
 
     print(data.head())
