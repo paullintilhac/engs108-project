@@ -8,7 +8,7 @@ install:
     #- deactivate
     - source venv/bin/activate
     - export PYTHONPATH=$PYTHONPATH:$(pwd)
-    - sudo apt update
+    #- sudo apt update
     - sudo apt install -y --no-install-recommends libopenmpi-dev
     - pip install -r requirements.txt
     
