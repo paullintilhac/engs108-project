@@ -23,9 +23,9 @@ from config import config
 from env.EnvMultipleStock_train import StockEnvTrain
 from env.EnvMultipleStock_validation import StockEnvValidation
 from env.EnvMultipleStock_trade import StockEnvTrade
-from env.EnvMultipleStock_train_small import StockEnvTrain_small
-from env.EnvMultipleStock_validation_small import StockEnvValidation_small
-from env.EnvMultipleStock_trade_small import StockEnvTrade_small
+from env.EnvMultipleStock_train_small import StockEnvTrainSmall
+from env.EnvMultipleStock_validation_small import StockEnvValidationSmall
+from env.EnvMultipleStock_trade_small import StockEnvTradeSmall
 
 
 def train_A2C(env_train, model_name, timesteps=25000):
@@ -123,7 +123,7 @@ def DRL_prediction(df,
                                                    model_name=name,
                                                    iteration=iter_num)])
     if small:
-        env_trade = DummyVecEnv([lambda: StockEnvTrade_small(trade_data,
+        env_trade = DummyVecEnv([lambda: StockEnvTradeSmall(trade_data,
                                                    turbulence_threshold=turbulence_threshold,
                                                    initial=initial,
                                                    previous_state=last_state,
@@ -220,7 +220,7 @@ def run_ensemble_strategy(df, unique_trade_date, rebalance_window, validation_wi
         train = data_split(df, start=20090000, end=unique_trade_date[i - rebalance_window - validation_window])
         env_train = DummyVecEnv([lambda: StockEnvTrain(train)])
         if small:
-            env_train = DummyVecEnv([lambda: StockEnvTrain_small(train)])
+            env_train = DummyVecEnv([lambda: StockEnvTrainSmall(train)])
 
         print("env train: " + str(env_train))
         ## validation env
@@ -232,7 +232,7 @@ def run_ensemble_strategy(df, unique_trade_date, rebalance_window, validation_wi
                                                           iteration=i)])
         if small:
             print("using small dataset")
-            env_val = DummyVecEnv([lambda: StockEnvValidation_small(validation,
+            env_val = DummyVecEnv([lambda: StockEnvValidationSmall(validation,
                                                           turbulence_threshold=turbulence_threshold,
                                                           iteration=i)])
         for property, value in vars(env_val).items():
