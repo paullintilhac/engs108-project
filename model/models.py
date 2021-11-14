@@ -22,6 +22,7 @@ from config import config
 # customized env
 from env.EnvMultipleStock_validation import StockEnvValidation
 from env.EnvMultipleStock_trade import StockEnvTrade
+from env.EnvMultipleStock_train import StockEnvTrain
 from env.EnvMultipleStock_train_small import StockEnvTrainSmall
 from env.EnvMultipleStock_validation_small import StockEnvValidationSmall
 from env.EnvMultipleStock_trade_small import StockEnvTradeSmall
