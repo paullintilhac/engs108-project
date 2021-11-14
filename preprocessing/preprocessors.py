@@ -44,7 +44,7 @@ def calcualte_price(df):
     data = data.sort_values(['tic', 'datadate'], ignore_index=True)
     return data
 
-def add_technical_indicator(df):
+def add_technical_indicator(df,extra_ind):
     """
     calcualte technical indicators
     use stockstats package to add technical inidactors
@@ -62,10 +62,11 @@ def add_technical_indicator(df):
     cci = pd.DataFrame()
     dx = pd.DataFrame()
     mom = pd.DataFrame()
-    bb = pd.DataFrame()
-    sma = pd.DataFrame()
-    ema = pd.DataFrame()
-    mstd = pd.DataFrame()
+    if (extra_ind):
+        boll = pd.DataFrame()
+        sma = pd.DataFrame()
+        ema = pd.DataFrame()
+        mstd = pd.DataFrame()
 
 
     #temp = stock[stock.tic == unique_ticker[0]]['macd']
@@ -86,34 +87,39 @@ def add_technical_indicator(df):
         temp_dx = stock[stock.tic == unique_ticker[i]]['dx_30']
         temp_dx = pd.DataFrame(temp_dx)
         dx = dx.append(temp_dx, ignore_index=True)
-        ## bollinger band
-        temp_bb = stock[stock.tic == unique_ticker[i]]['boll']
-        temp_bb = pd.DataFrame(temp_bb)
-        bb = bb.append(temp_bb, ignore_index=True)
-        ## Simple Moving Average
-        temp_sma = stock[stock.tic == unique_ticker[i]]['open_2_sma']
-        temp_sma = pd.DataFrame(temp_sma)
-        sma = sma.append(temp_sma, ignore_index=True)
-        ## Exponential Moving Average
-        temp_ema = stock[stock.tic == unique_ticker[i]]['open_2_ema']
-        temp_ema = pd.DataFrame(temp_ema)
-        ema = ema.append(temp_ema, ignore_index=True)
-        ## moving standard deviation
-        temp_mstd = stock[stock.tic == unique_ticker[i]]['open_2_mstd']
-        temp_mstd = pd.DataFrame(temp_mstd)
-        mstd = mstd.append(temp_mstd, ignore_index=True)
+        if extra_ind:
+            ## bollinger band
+            temp_bb = stock[stock.tic == unique_ticker[i]]['boll']
+            temp_bb = pd.DataFrame(temp_bb)
+            bb = bb.append(temp_bb, ignore_index=True)
+            ## Simple Moving Average
+            temp_sma = stock[stock.tic == unique_ticker[i]]['open_2_sma']
+            temp_sma = pd.DataFrame(temp_sma)
+            sma = sma.append(temp_sma, ignore_index=True)
+            ## Exponential Moving Average
+            temp_ema = stock[stock.tic == unique_ticker[i]]['open_2_ema']
+            temp_ema = pd.DataFrame(temp_ema)
+            ema = ema.append(temp_ema, ignore_index=True)
+            ## moving standard deviation
+            temp_mstd = stock[stock.tic == unique_ticker[i]]['open_2_mstd']
+            temp_mstd = pd.DataFrame(temp_mstd)
+            mstd = mstd.append(temp_mstd, ignore_index=True)
 
 
     df['macd'] = macd
     df['rsi'] = rsi
     df['cci'] = cci
     df['adx'] = dx
-
+    if extra_ind:
+        df['boll'] = bb
+        df['sma'] = sma
+        df['ema'] = ema
+        df['mstd'] = mstd
     return df
 
 
 
-def preprocess_data(small):
+def preprocess_data(small,no_ind,extra_ind):
     """data preprocessing pipeline"""
     print("loading dataset " + str(config.TRAINING_DATA_FILE))
     if (small):
@@ -126,7 +132,9 @@ def preprocess_data(small):
     # calcualte adjusted price
     df_preprocess = calcualte_price(df)
     # add technical indicators using stockstats
-    df_final=add_technical_indicator(df_preprocess)
+    df_final=df_preprocess
+    if not no_ind:
+        df_final=add_technical_indicator(df_preprocess,extra_ind)
     # fill the missing values at the beginning
     df_final.fillna(method='bfill',inplace=True)
     return df_final

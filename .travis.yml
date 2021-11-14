@@ -16,6 +16,8 @@ install:
 
 script:
     - python3 run_DRL.py -T 20160601 --small
+    - python3 run_DRL.py -T 20160601 --small --no_ind
+    - python3 run_DRL.py -T 20160601 --small --extra_ind
   
 
 # after_success:

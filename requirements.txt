@@ -3,7 +3,7 @@ numpy==1.16.4
 pandas==1.0.3
 stockstats
 scikit-learn==0.21.0
-gym==0.15.3
+gym==0.10.3
 stable-baselines[mpi]
 tensorflow==1.15.4
 
