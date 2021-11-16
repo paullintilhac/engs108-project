@@ -20,9 +20,9 @@ from preprocessing.preprocessors import *
 from config import config
 
 # customized env
-from env.EnvMultipleStock_train import StockEnvTrain
 from env.EnvMultipleStock_validation import StockEnvValidation
 from env.EnvMultipleStock_trade import StockEnvTrade
+from env.EnvMultipleStock_train import StockEnvTrain
 
 
 def train_A2C(env_train, model_name, timesteps=25000):
@@ -107,7 +107,10 @@ def DRL_prediction(df,
                    unique_trade_date,
                    rebalance_window,
                    turbulence_threshold,
-                   initial):
+                   initial,
+                   small,
+                   no_ind,
+                   extra_ind):
     ### make a prediction based on trained model###
 
     ## trading env
@@ -117,9 +120,13 @@ def DRL_prediction(df,
                                                    initial=initial,
                                                    previous_state=last_state,
                                                    model_name=name,
-                                                   iteration=iter_num)])
+                                                   iteration=iter_num,
+                                                   small=small, 
+                                                   no_ind=no_ind, 
+                                                   extra_ind=extra_ind)])
+    
     obs_trade = env_trade.reset()
-
+    print("trade_data.index: " + str(trade_data.index))
     for i in range(len(trade_data.index.unique())):
         action, _states = model.predict(obs_trade)
         obs_trade, rewards, dones, info = env_trade.step(action)
@@ -149,7 +156,7 @@ def get_validation_sharpe(iteration):
     return sharpe
 
 
-def run_ensemble_strategy(df, unique_trade_date, rebalance_window, validation_window) -> None:
+def run_ensemble_strategy(df, unique_trade_date, rebalance_window, validation_window,small,no_ind,extra_ind) -> None:
     """Ensemble Strategy that combines PPO, A2C and DDPG"""
     print("============Start Ensemble Strategy============")
     # for ensemble model, it's necessary to feed the last state
@@ -207,14 +214,21 @@ def run_ensemble_strategy(df, unique_trade_date, rebalance_window, validation_wi
         ############## Environment Setup starts ##############
         ## training env
         train = data_split(df, start=20090000, end=unique_trade_date[i - rebalance_window - validation_window])
-        env_train = DummyVecEnv([lambda: StockEnvTrain(train)])
+        env_train = DummyVecEnv([lambda: StockEnvTrain(train,small,no_ind,extra_ind)])
 
+        print("env train: " + str(env_train))
         ## validation env
         validation = data_split(df, start=unique_trade_date[i - rebalance_window - validation_window],
                                 end=unique_trade_date[i - rebalance_window])
-        env_val = DummyVecEnv([lambda: StockEnvValidation(validation,
+        
+        env_val = DummyVecEnv([lambda: StockEnvValidation(validation, small, no_ind, extra_ind,
                                                           turbulence_threshold=turbulence_threshold,
                                                           iteration=i)])
+        
+        for property, value in vars(env_val).items():
+            print(property, ":", value)
+        print("env val: " + str(env_val))
+
         obs_val = env_val.reset()
         ############## Environment Setup ends ##############
 
@@ -271,7 +285,7 @@ def run_ensemble_strategy(df, unique_trade_date, rebalance_window, validation_wi
                                              unique_trade_date=unique_trade_date,
                                              rebalance_window=rebalance_window,
                                              turbulence_threshold=turbulence_threshold,
-                                             initial=initial)
+                                             initial=initial,small=small,no_ind=no_ind,extra_ind=extra_ind)
         # print("============Trading Done============")
         ############## Trading ends ##############
 
