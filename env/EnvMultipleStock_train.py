@@ -37,7 +37,7 @@ class StockEnvTrain(gym.Env):
         if self.no_ind:
             n_inds = 0
         if self.extra_ind:
-            n_inds = 10
+            n_inds = 9
         obs_space_size = 1 + self.STOCK_DIM*(2 + n_inds)
 
         # action_space normalization and shape is self.STOCK_DIM
@@ -51,25 +51,33 @@ class StockEnvTrain(gym.Env):
         self.data = self.df.loc[self.day,:]
         self.terminal = False             
         # initalize 
-        print("data: " + str(self.data))
+        #print("data: ")
+        #print(str(self.data))
         self.state = [INITIAL_ACCOUNT_BALANCE] + \
                       self.data.adjcp.values.tolist() + \
                       [0]*self.STOCK_DIM
+        #print("state in train env1: ")
+        #print( str(self.state))
+
         if not self.no_ind:
             self.state = self.state + \
             self.data.macd.values.tolist() + \
             self.data.rsi.values.tolist() + \
             self.data.cci.values.tolist() + \
             self.data.adx.values.tolist()
+        #print("state in train env2: ")
+        #print( str(self.state))
+
         if self.extra_ind:
             self.state = self.state + \
-            self.data.boll.values.tolist() + \
             self.data.sma.values.tolist() + \
             self.data.ema.values.tolist() + \
             self.data.mstd.values.tolist() + \
             self.data.turbulence.values.tolist() + \
             self.data.systemic_risk.values.tolist()
-       
+        #print("systemic risk: " + str(self.data.turbulence.values.tolist()))
+        #print("state in train env3: ")
+        #print( str(self.state))
         # initialize reward
         self.reward = 0
         self.cost = 0
@@ -146,7 +154,8 @@ class StockEnvTrain(gym.Env):
             return self.state, self.reward, self.terminal,{}
 
         else:
-            # print(np.array(self.state[1:29]))
+            #print("state")
+            #print(np.array(self.state[1:29]))
 
             actions = actions * HMAX_NORMALIZE
             #actions = (actions.astype(int))
@@ -161,17 +170,17 @@ class StockEnvTrain(gym.Env):
             buy_index = argsort_actions[::-1][:np.where(actions > 0)[0].shape[0]]
 
             for index in sell_index:
-                # print('take sell action'.format(actions[index]))
+                #print('take sell action'.format(actions[index]))
                 self._sell_stock(index, actions[index])
 
             for index in buy_index:
-                # print('take buy action: {}'.format(actions[index]))
+                #print('take buy action: {}'.format(actions[index]))
                 self._buy_stock(index, actions[index])
 
             self.day += 1
             self.data = self.df.loc[self.day,:]         
             #load next state
-            # print("stock_shares:{}".format(self.state[29:]))
+            #print("stock_shares:{}".format(self.state[29:]))
             self.state =  [self.state[0]] + \
                     self.data.adjcp.values.tolist() + \
                     list(self.state[(self.STOCK_DIM+1):(self.STOCK_DIM*2+1)])
@@ -183,7 +192,6 @@ class StockEnvTrain(gym.Env):
                 self.data.adx.values.tolist()
             if self.extra_ind:
                 self.state = self.state + \
-                self.data.boll.values.tolist() + \
                 self.data.sma.values.tolist() + \
                 self.data.ema.values.tolist() + \
                 self.data.mstd.values.tolist() + \
@@ -197,7 +205,7 @@ class StockEnvTrain(gym.Env):
             #print("end_total_asset:{}".format(end_total_asset))
             
             self.reward = end_total_asset - begin_total_asset            
-            # print("step_reward:{}".format(self.reward))
+            #print("step_reward:{}".format(self.reward))
             self.rewards_memory.append(self.reward)
             
             self.reward = self.reward*REWARD_SCALING
@@ -226,7 +234,6 @@ class StockEnvTrain(gym.Env):
             self.data.adx.values.tolist()
         if self.extra_ind:
             self.state = self.state + \
-            self.data.boll.values.tolist() + \
             self.data.sma.values.tolist() + \
             self.data.ema.values.tolist() + \
             self.data.mstd.values.tolist() + \

@@ -126,7 +126,6 @@ def DRL_prediction(df,
                                                    extra_ind=extra_ind)])
     
     obs_trade = env_trade.reset()
-    print("trade_data.index: " + str(trade_data.index))
     for i in range(len(trade_data.index.unique())):
         action, _states = model.predict(obs_trade)
         obs_trade, rewards, dones, info = env_trade.step(action)
@@ -217,7 +216,8 @@ def run_ensemble_strategy(df, unique_trade_date, rebalance_window, validation_wi
         train = data_split(df, start=20090000, end=unique_trade_date[i - rebalance_window - validation_window])
         env_train = DummyVecEnv([lambda: StockEnvTrain(train,small,no_ind,extra_ind)])
         print("train " + str(train))
-        print("env train: " + str(env_train))
+        print("env train: " + str(dir(env_train)))
+        print("actions " + str(env_train.actions) )
         ## validation env
         validation = data_split(df, start=unique_trade_date[i - rebalance_window - validation_window],
                                 end=unique_trade_date[i - rebalance_window])

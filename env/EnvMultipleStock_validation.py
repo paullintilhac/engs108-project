@@ -39,7 +39,7 @@ class StockEnvValidation(gym.Env):
         if self.no_ind:
             n_inds = 0
         if self.extra_ind:
-            n_inds = 10
+            n_inds = 9
         obs_space_size = 1 + self.STOCK_DIM*(2 + n_inds)
         
         # action_space normalization and shape is self.self.STOCK_DIM
@@ -64,7 +64,6 @@ class StockEnvValidation(gym.Env):
             self.data.adx.values.tolist()
         if self.extra_ind:
             self.state = self.state + \
-            self.data.boll.values.tolist() + \
             self.data.sma.values.tolist() + \
             self.data.ema.values.tolist() + \
             self.data.mstd.values.tolist() + \
@@ -207,7 +206,6 @@ class StockEnvValidation(gym.Env):
                 self.data.adx.values.tolist()
             if self.extra_ind:
                 self.state = self.state + \
-                self.data.boll.values.tolist() + \
                 self.data.sma.values.tolist() + \
                 self.data.ema.values.tolist() + \
                 self.data.mstd.values.tolist() + \
@@ -249,7 +247,6 @@ class StockEnvValidation(gym.Env):
             self.data.adx.values.tolist()
         if self.extra_ind:
             self.state = self.state + \
-            self.data.boll.values.tolist() + \
             self.data.sma.values.tolist() + \
             self.data.ema.values.tolist() + \
             self.data.mstd.values.tolist() + \

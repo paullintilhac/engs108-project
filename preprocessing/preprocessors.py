@@ -52,8 +52,8 @@ def add_technical_indicator(df,extra_ind):
     :return: (df) pandas dataframe
     """
     stock = Sdf.retype(df.copy())
-    print("printing stock object:")
-    print("stock: " + str(stock))
+    #print("printing stock object:")
+    #print("stock: " + str(stock))
     stock['close'] = stock['adjcp']
     unique_ticker = stock.tic.unique()
 
@@ -67,6 +67,7 @@ def add_technical_indicator(df,extra_ind):
         sma = pd.DataFrame()
         ema = pd.DataFrame()
         mstd = pd.DataFrame()
+        
 
 
     #temp = stock[stock.tic == unique_ticker[0]]['macd']
@@ -111,7 +112,7 @@ def add_technical_indicator(df,extra_ind):
     df['cci'] = cci
     df['adx'] = dx
     if extra_ind:
-        df['boll'] = bb
+        #df['boll'] = bb
         df['sma'] = sma
         df['ema'] = ema
         df['mstd'] = mstd
