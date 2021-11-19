@@ -287,7 +287,6 @@ class StockEnvTrade(gym.Env):
                 self.data.adx.values.tolist()
             if self.extra_ind:
                 self.state = self.state + \
-                self.data.boll.values.tolist() + \
                 self.data.sma.values.tolist() + \
                 self.data.ema.values.tolist() + \
                 self.data.mstd.values.tolist() + \
