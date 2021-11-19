@@ -42,7 +42,7 @@ class StockEnvTrade(gym.Env):
         if self.no_ind:
             n_inds = 0
         if self.extra_ind:
-            n_inds = 8
+            n_inds = 10
         obs_space_size = 1 + self.STOCK_DIM*(2 + n_inds)
         print("observation space size: " + str(obs_space_size))
         self.observation_space = spaces.Box(low=0, high=np.inf, shape = (obs_space_size,))
@@ -70,7 +70,9 @@ class StockEnvTrade(gym.Env):
             self.data.boll.values.tolist() + \
             self.data.sma.values.tolist() + \
             self.data.ema.values.tolist() + \
-            self.data.mstd.values.tolist() 
+            self.data.mstd.values.tolist() + \
+            self.data.turbulence.values.tolist() + \
+            self.data.systemic_risk.values.tolist()
                       
         # initialize reward
         self.reward = 0
@@ -213,7 +215,9 @@ class StockEnvTrade(gym.Env):
                 self.data.boll.values.tolist() + \
                 self.data.sma.values.tolist() + \
                 self.data.ema.values.tolist() + \
-                self.data.mstd.values.tolist() 
+                self.data.mstd.values.tolist() + \
+                self.data.turbulence.values.tolist() + \
+                self.data.systemic_risk.values.tolist()
             end_total_asset = self.state[0]+ \
             sum(np.array(self.state[1:(self.STOCK_DIM+1)])*np.array(self.state[(self.STOCK_DIM+1):(self.STOCK_DIM*2+1)]))
             self.asset_memory.append(end_total_asset)
@@ -254,7 +258,10 @@ class StockEnvTrade(gym.Env):
                 self.data.boll.values.tolist() + \
                 self.data.sma.values.tolist() + \
                 self.data.ema.values.tolist() + \
-                self.data.mstd.values.tolist() 
+                self.data.mstd.values.tolist() + \
+                self.data.turbulence.values.tolist() + \
+                self.data.systemic_risk.values.tolist()
+
         else:
             previous_total_asset = self.previous_state[0]+ \
             sum(np.array(self.previous_state[1:(self.STOCK_DIM+1)])*np.array(self.previous_state[(self.STOCK_DIM+1):(self.STOCK_DIM*2+1)]))
@@ -286,7 +293,9 @@ class StockEnvTrade(gym.Env):
                 self.data.boll.values.tolist() + \
                 self.data.sma.values.tolist() + \
                 self.data.ema.values.tolist() + \
-                self.data.mstd.values.tolist() 
+                self.data.mstd.values.tolist() + \
+                self.data.turbulence.values.tolist() + \
+                self.data.systemic_risk.values.tolist()
                           
             
         return self.state

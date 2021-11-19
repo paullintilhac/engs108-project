@@ -37,7 +37,7 @@ class StockEnvTrain(gym.Env):
         if self.no_ind:
             n_inds = 0
         if self.extra_ind:
-            n_inds = 8
+            n_inds = 10
         obs_space_size = 1 + self.STOCK_DIM*(2 + n_inds)
 
         # action_space normalization and shape is self.STOCK_DIM
@@ -66,7 +66,9 @@ class StockEnvTrain(gym.Env):
             self.data.boll.values.tolist() + \
             self.data.sma.values.tolist() + \
             self.data.ema.values.tolist() + \
-            self.data.mstd.values.tolist() 
+            self.data.mstd.values.tolist() + \
+            self.data.turbulence.values.tolist() + \
+            self.data.systemic_risk.values.tolist()
        
         # initialize reward
         self.reward = 0
@@ -154,7 +156,7 @@ class StockEnvTrain(gym.Env):
             #print("begin_total_asset:{}".format(begin_total_asset))
             
             argsort_actions = np.argsort(actions)
-            
+            #print("actions " + str(actions))
             sell_index = argsort_actions[:np.where(actions < 0)[0].shape[0]]
             buy_index = argsort_actions[::-1][:np.where(actions > 0)[0].shape[0]]
 
@@ -184,7 +186,9 @@ class StockEnvTrain(gym.Env):
                 self.data.boll.values.tolist() + \
                 self.data.sma.values.tolist() + \
                 self.data.ema.values.tolist() + \
-                self.data.mstd.values.tolist() 
+                self.data.mstd.values.tolist() + \
+                self.data.turbulence.values.tolist() +\
+                self.data.systemic_risk.values.tolist()
                     
             
             end_total_asset = self.state[0]+ \
@@ -225,7 +229,10 @@ class StockEnvTrain(gym.Env):
             self.data.boll.values.tolist() + \
             self.data.sma.values.tolist() + \
             self.data.ema.values.tolist() + \
-            self.data.mstd.values.tolist() 
+            self.data.mstd.values.tolist() + \
+            self.data.turbulence.values.tolist() + \
+            self.data.systemic_risk.values.tolist()
+
         # iteration += 1 
         return self.state
     

@@ -39,7 +39,7 @@ class StockEnvValidation(gym.Env):
         if self.no_ind:
             n_inds = 0
         if self.extra_ind:
-            n_inds = 8
+            n_inds = 10
         obs_space_size = 1 + self.STOCK_DIM*(2 + n_inds)
         
         # action_space normalization and shape is self.self.STOCK_DIM
@@ -67,7 +67,9 @@ class StockEnvValidation(gym.Env):
             self.data.boll.values.tolist() + \
             self.data.sma.values.tolist() + \
             self.data.ema.values.tolist() + \
-            self.data.mstd.values.tolist() 
+            self.data.mstd.values.tolist() + \
+            self.data.turbulence.values.tolist() + \
+            self.data.systemic_risk.values.tolist()
         # initialize reward
         self.reward = 0
         self.turbulence = 0
@@ -208,7 +210,9 @@ class StockEnvValidation(gym.Env):
                 self.data.boll.values.tolist() + \
                 self.data.sma.values.tolist() + \
                 self.data.ema.values.tolist() + \
-                self.data.mstd.values.tolist() 
+                self.data.mstd.values.tolist() + \
+                self.data.turbulence.values.tolist() + \
+                self.data.systemic_risk.values.tolist()
             
             end_total_asset = self.state[0]+ \
             sum(np.array(self.state[1:(self.STOCK_DIM+1)])*np.array(self.state[(self.STOCK_DIM+1):(self.STOCK_DIM*2+1)]))
@@ -248,7 +252,9 @@ class StockEnvValidation(gym.Env):
             self.data.boll.values.tolist() + \
             self.data.sma.values.tolist() + \
             self.data.ema.values.tolist() + \
-            self.data.mstd.values.tolist() 
+            self.data.mstd.values.tolist() + \
+            self.data.turbulence.values.tolist() + \
+            self.data.systemic_risk.values.tolist()
             
         return self.state
     

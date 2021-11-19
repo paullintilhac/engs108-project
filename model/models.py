@@ -168,7 +168,8 @@ def run_ensemble_strategy(df, unique_trade_date, rebalance_window, validation_wi
     a2c_sharpe_list = []
 
     model_use = []
-
+    print("df in run ensemble")
+    print(str(df))
     # based on the analysis of the in-sample data
     #turbulence_threshold = 140
     insample_turbulence = df[(df.datadate<20151000) & (df.datadate>=20090000)]
@@ -215,7 +216,7 @@ def run_ensemble_strategy(df, unique_trade_date, rebalance_window, validation_wi
         ## training env
         train = data_split(df, start=20090000, end=unique_trade_date[i - rebalance_window - validation_window])
         env_train = DummyVecEnv([lambda: StockEnvTrain(train,small,no_ind,extra_ind)])
-
+        print("train " + str(train))
         print("env train: " + str(env_train))
         ## validation env
         validation = data_split(df, start=unique_trade_date[i - rebalance_window - validation_window],
@@ -280,6 +281,7 @@ def run_ensemble_strategy(df, unique_trade_date, rebalance_window, validation_wi
         ############## Trading starts ##############
         print("======Trading from: ", unique_trade_date[i - rebalance_window], "to ", unique_trade_date[i])
         #print("Used Model: ", model_ensemble)
+
         last_state_ensemble = DRL_prediction(df=df, model=model_ensemble, name="ensemble",
                                              last_state=last_state_ensemble, iter_num=i,
                                              unique_trade_date=unique_trade_date,

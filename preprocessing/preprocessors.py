@@ -91,7 +91,7 @@ def add_technical_indicator(df,extra_ind):
             ## bollinger band
             temp_bb = stock[stock.tic == unique_ticker[i]]['boll']
             temp_bb = pd.DataFrame(temp_bb)
-            bb = bb.append(temp_bb, ignore_index=True)
+            bb = boll.append(temp_bb, ignore_index=True)
             ## Simple Moving Average
             temp_sma = stock[stock.tic == unique_ticker[i]]['open_2_sma']
             temp_sma = pd.DataFrame(temp_sma)
